@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import MainPageData
 
 
 class PasswordChangeSerializer(serializers.Serializer):
@@ -11,3 +12,7 @@ class PasswordChangeSerializer(serializers.Serializer):
         return value
 
 
+class MainPageDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MainPageData
+        fields = '__all__'

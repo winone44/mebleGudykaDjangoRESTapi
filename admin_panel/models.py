@@ -34,3 +34,13 @@ class MyUser(AbstractBaseUser):
     USERNAME_FIELD = 'email'
 
 
+class MainPageData(models.Model):
+    first_section = models.JSONField()
+    other_projects = models.JSONField()
+    parallax = models.JSONField()
+    how_we_work = models.JSONField()
+    about_us = models.JSONField()
+    customer_reviews = models.JSONField()
+    our_knowledge = models.JSONField()
+    best_furniture_parallax = models.JSONField()
+    footer = models.JSONField()

@@ -1,11 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from admin_panel.serializers import PasswordChangeSerializer
+from admin_panel.models import MainPageData
+from admin_panel.serializers import PasswordChangeSerializer, MainPageDataSerializer
 from admin_panel.utils import get_tokens_for_user
 from mebleGudykaDjangoRESTapi import settings
 
@@ -46,3 +46,31 @@ class ChangePasswordView(APIView):
         request.user.set_password(serializer.validated_data['new_password'])
         request.user.save()
         return Response({'msg': 'The password has been changed'}, status=status.HTTP_200_OK)
+
+
+class MainPageDataView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            data = MainPageData.objects.first()
+            serializer = MainPageDataSerializer(data)
+            return Response(serializer.data)
+        except MainPageData.DoesNotExist:
+            return Response({}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request):
+        try:
+            data = MainPageData.objects.first()
+            serializer = MainPageDataSerializer(data, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except MainPageData.DoesNotExist:
+            serializer = MainPageDataSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
